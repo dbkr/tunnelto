@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-COPY ./target/x86_64-unknown-linux-musl/release/tunnelto_server /tunnelto_server
+COPY ./target/release/tunnelto_server /tunnelto_server
 
 # client svc
 EXPOSE 8080
