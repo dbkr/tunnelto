@@ -1,13 +1,11 @@
-FROM clux/muslrust:stable as builder
+FROM ubuntu:latest
 
-WORKDIR /src
+RUN apt-get update && \
+    apt-get install --quiet --assume-yes \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . /src
-RUN cargo build --bin tunnelto_server --release
-
-FROM alpine:latest
-
-COPY --from=builder /src/target/release/tunnelto_server /tunnelto_server
+COPY ./target/release/tunnelto_server /tunnelto_server
 
 # client svc
 EXPOSE 8080
