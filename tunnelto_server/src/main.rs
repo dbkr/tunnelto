@@ -22,6 +22,7 @@ pub use self::auth::auth_db;
 pub use self::auth::client_auth;
 
 pub use self::auth_db::AuthDbService;
+pub use self::auth_db::StaticAuth;
 
 mod control_server;
 mod remote;
@@ -42,12 +43,16 @@ use tracing::{error, info, Instrument};
 lazy_static! {
     pub static ref CONNECTIONS: Connections = Connections::new();
     pub static ref ACTIVE_STREAMS: ActiveStreams = Arc::new(DashMap::new());
-    pub static ref AUTH_DB_SERVICE: AuthDbService =
-        AuthDbService::new().expect("failed to init auth-service");
     pub static ref CONFIG: Config = Config::from_env();
+
+    //pub static ref AUTH_DB_SERVICE: AuthDbService =
+    //    AuthDbService::new().expect("failed to init auth-service");
 
     // To disable all authentication:
     // pub static ref AUTH_DB_SERVICE: crate::auth::NoAuth = crate::auth::NoAuth;
+
+    // for static auth
+    pub static ref AUTH_DB_SERVICE: self::auth_db::StaticAuth = self::auth_db::StaticAuth;
 }
 
 #[tokio::main]

@@ -40,6 +40,9 @@ pub struct Config {
 
     /// The host on which we create tunnels on
     pub tunnel_host: String,
+
+    /// Valid keys for static client auth
+    pub static_auth_keys: Vec<String>,
 }
 
 impl Config {
@@ -76,6 +79,10 @@ impl Config {
 
         let tunnel_host = std::env::var("TUNNEL_HOST").unwrap_or("tunnelto.dev".to_string());
 
+        let static_auth_keys = std::env::var("STATIC_AUTH_KEYS")
+            .map(|s| s.split(",").map(String::from).collect())
+            .unwrap_or(vec![]);
+
         Config {
             allowed_hosts,
             blocked_sub_domains,
@@ -88,6 +95,7 @@ impl Config {
             instance_id,
             blocked_ips,
             tunnel_host,
+            static_auth_keys,
         }
     }
 }

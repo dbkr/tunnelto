@@ -2,7 +2,8 @@ use rusoto_core::{Client, HttpClient, Region};
 use rusoto_dynamodb::{AttributeValue, DynamoDb, DynamoDbClient, GetItemError, GetItemInput};
 
 use super::AuthResult;
-use crate::auth::AuthService;
+pub use crate::auth::AuthService;
+use crate::{CONFIG};
 use async_trait::async_trait;
 use rusoto_credential::EnvironmentProvider;
 use sha2::Digest;
@@ -201,6 +202,28 @@ impl AuthDbService {
             Ok(Some(uuid))
         } else {
             Ok(None)
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct StaticAuth;
+
+#[async_trait]
+impl AuthService for StaticAuth {
+    type Error = Error;
+    type AuthKey = String;
+
+    /// Authenticate a subdomain with an AuthKey
+    async fn auth_sub_domain(
+        &self,
+        auth_key: &String,
+        _subdomain: &str,
+    ) -> Result<AuthResult, Error> {
+        if CONFIG.static_auth_keys.contains(auth_key) {
+            Ok(AuthResult::Available)
+        } else {
+            Ok(AuthResult::PaymentRequired)
         }
     }
 }
