@@ -1,6 +1,13 @@
-FROM ubuntu:latest
+FROM clux/muslrust:stable as builder
 
-COPY ./target/release/tunnelto_server /tunnelto_server
+WORKDIR /src
+
+COPY . /src
+RUN cargo build --bin tunnelto_server --release
+
+FROM alpine:latest
+
+COPY --from=builder /src/target/release/tunnelto_server /tunnelto_server
 
 # client svc
 EXPOSE 8080
