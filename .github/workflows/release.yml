@@ -72,6 +72,9 @@ jobs:
   publish:
     needs: [build, build_win]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Get the version
         id: get_version
